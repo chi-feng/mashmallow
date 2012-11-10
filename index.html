@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<link rel="stylesheet" href="css/font.css" type="text/css" charset="utf-8" />
+<link href="css/screen.css" rel="stylesheet" type="text/css" media="screen" />
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery-ui-1.9.1.custom.js"></script>
+  <script src="js/sprintf.js"></script>
+</head>
+<body>
+<div id="machine">
+  <div id="controls">
+  
+  <div id="logo">
+    <img src="css/logo.png" />
+  </div>
+  
+  <div id="lcd">
+    <div id="row1">&nbsp;</div>
+    <div id="row2">Load Sample</div>
+  </div>
+  
+  <div id="browser">
+    Blah Blah Blah
+  </div>
+  
+  
+  <div id="playbackcontrol">
+    <div id="playbutton" class="pushbutton"></div>
+    <div id="loopbutton" class="pushbutton"></div>
+    <div id="recordbutton" class="pushbutton"></div>
+    <div id="savebutton" class="pushbutton"></div>
+  </div>
+  
+  </div>
+  <div id="panel"></div>
+  <br class="clear" />
+</div>
+</div>
+<script>
+
+var context;
+
+var buffer; 
+var bufferLoaded = false;
+
+var masterGainNode;
+
+var n = 16;
+
+function create_buttons(n) {
+  for (var i = 0; i < n; i++) {
+    var button = $('<div id="button' + i + '" class="button"><span></span></div>');
+    button.data('id', i);
+    button.appendTo('#panel');
+  }
+  $('.button').addClass('rounded');
+  
+}
+
+var map = new Array(49, 50, 51, 52, 81, 87, 69, 82, 65, 83, 68, 70, 90, 88, 67, 86);
+  
+function keydown(evt) {
+  for (var i = 0; i < n; i++) {
+    if (evt.which == map[i]) {
+      $('#button' + i).addClass('activated');
+      $('#row1').html('Playing ' + sprintf('%02d', i));
+      $('<p>'+evt.timeStamp+'</p>').appendTo('#browser');
+    }
+  }
+}
+
+function keyup(evt) {
+  for (var i = 0; i < n; i++) {
+    if (evt.which == map[i]) {
+      $('#button' + i).removeClass('activated');
+    }
+  }
+}
+
+function buttonclick(id) {
+  var button = $('#button'+id);
+  if (button.data('selected') == 1) {
+    button.data('selected', 0);
+    button.removeClass('selected');
+    $('#row2').html('');
+  } else {
+    $('#panel').find('.selected').removeClass('selected').data('selected',0);
+    button.data('selected', 1);
+    button.addClass('selected');
+    $('#row2').html(sprintf('Selected #%02d',(id+1)));
+  }
+}
+
+$(document).ready(function() {
+  // create buttons
+  create_buttons(n);
+
+  context = new webkitAudioContext();
+  
+  /*
+  $('#button3').html('<img src="assets/example/thumb.jpg" /><img class="overlay" src="css/glossy.png" />');
+  $('#button15').html('<img src="assets/example/cowbell.gif" /><img class="overlay" src="css/glossy.png" />');
+  */
+  
+  $('.button').click(function() {
+    buttonclick($(this).data('id'));
+  });
+  
+  $('.pushbutton').mousedown(function() {
+    $(this).addClass('pushed');
+  });
+  $('.pushbutton').mouseup(function() {
+    $(this).removeClass('pushed');
+  });
+  
+  $(document).keydown(keydown);
+  $(document).keyup(keyup);
+
+  function loadBuffer(url) {
+      console.log('Loading Buffer');
+      var request = new XMLHttpRequest();
+      request.open("GET", url, true);
+      request.responseType = "arraybuffer";
+      request.onload = function() {
+      	buffer = context.createBuffer(request.response, false);
+          bufferLoaded = true;
+          console.log('Buffer Loaded');
+      }
+      request.send();
+  }
+
+  function init() {
+
+  	loadBuffer('assets/example/TRRBHAK139155E1516.mp3');
+
+  	var finalMixNode;
+  	if (context.createDynamicsCompressor) {
+  		compressor = context.createDynamicsCompressor();
+  		compressor.connect(context.destination);
+  		finalMixNode = compressor;
+  	}
+  	masterGainNode = context.createGainNode();
+  	masterGainNode.gain.value = 0.4; 
+  	masterGainNode.connect(finalMixNode);
+  }
+
+  function playNote(buffer, when, offset, duration) {
+  	var note = context.createBufferSource();
+  	note.buffer = buffer;
+  	note.playbackRate.value = 1.0;
+      note.connect(masterGainNode);
+  	note.start(when, offset, duration);
+  }
+
+  init();
+  
+});
+</script> 
+</body>
+</html>
