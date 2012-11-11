@@ -9,7 +9,8 @@
 </head>
 <body>
   <div id="loading">
-    Loading Samples
+    <img src="css/biglogo.png" style="biglogo" /><br />
+    Loading Samples...
   </div>
 <div id="machine" style="display: none;">
   <div id="controls">
@@ -24,25 +25,27 @@
     <div class="overlay"></div>
   </div>
   <div id="sample-controls">
-    <div id="onshotbutton" class="pushbutton"></div>
-    <div id="loopbutton" class="pushbutton"></div>
+    <div id="oneshotbutton" class="togglebutton"><img src="css/one_shot.png" /></div>
+    <div id="loopbutton" class="togglebutton"><img src="css/loop.png" /></div>
+    <div id="mutebutton" class="togglebutton"><img src="css/mute.png" /></div>
   </div>
   <div id="info">
+    <div id="loadbutton"><img src="css/loadbutton.png" /></div>
+    <div id="editbutton"><img src="css/editbutton.png" /></div>
     <div id="info1">&nbsp;</div>
     <div id="info2">&nbsp;</div>
     <div id="info3">&nbsp;</div>
   </div>
   <br class="clear" />
-  <div id="browser">
-    Blah Blah Blah
-  </div>
-  
+  <div id="browser"></div>
+
+  <div id="logo"><img src="css/logo.png" /></div>
   
   <div id="playbackcontrol">
-    <div id="playbutton" class="pushbutton"></div>
-    <div id="loopbutton" class="pushbutton"></div>
-    <div id="recordbutton" class="pushbutton"></div>
-    <div id="savebutton" class="pushbutton"></div>
+    <div id="playbutton" class="pushbutton"><img src="css/Play.png" /></div>
+    <div id="recordbutton" class="pushbutton"><img src="css/Rec.png" /></div>
+    <div id="trash" class="pushbutton"><img src="css/trash.png" /></div>
+    <div id="sharebutton" class="pushbutton"><img src="css/share.png" /></div>
   </div>
   
   </div>
@@ -50,7 +53,14 @@
   <br class="clear" />
 </div>
 </div>
-<script src="assets/example/TRRBHAK139155E1516.var.js"></script>
+
+<script>
+var vids = new Array('ofaRvNOV4SI');
+var vid_slices = new Array();
+var vids_loaded = 0;
+</script>
+
+<script src="ajax.php?vid=ofaRvNOV4SI&i=0" language="javascript"></script>
 
 <script>
 
@@ -62,7 +72,6 @@ var bufferLoaded = false;
 var masterGainNode;
 
 var n = 16;
-
 
 function playNote(buffer, when, offset, duration) {
 	var note = context.createBufferSource();
@@ -78,6 +87,7 @@ function create_buttons(n) {
     var button = $('<div id="button' + i + '" class="button"><span></span></div>');
     button.data('id', i);
     button.appendTo('#panel');
+    button.delay(i*50+500).fadeIn(400);
   }
   $('.button').addClass('rounded');
   
@@ -91,8 +101,8 @@ function keydown(evt) {
       if ($('#button' + i).data('note')) {
         $('#button' + i).data('note').noteOff(0);
       }
-      var duration = TRRBHAK139155E1516.bars[i].duration;
-      var start = TRRBHAK139155E1516.bars[i].start;
+      var duration = vid_slices[0].bars[4*i].duration;
+      var start = vid_slices[0].bars[4*i].start;
       var note = playNote(buffer, 0, start, duration);
       
       $('#button' + i).addClass('activated');
@@ -125,9 +135,24 @@ function buttonclick(id) {
   }
 }
 
+function populateSamples(i) {
+  var slices = vid_slices[i];
+  var beats = slices.beats; 
+  var bars = slices.bars;
+  var counter = -1;
+  for (var j = 0; j < beats.length; j++) {
+    var beat_id = sprintf('%d-%d', i, j);
+    var beat = $('<span id="' + beat_id + '"></span>');
+    if (counter++ == 3 || counter == 0) {
+      counter = 0;
+      beat.addClass('downbeat');
+    }
+    beat.appendTo('#browser');
+  }
+}
+
 $(document).ready(function() {
   // create buttons
-  create_buttons(n);
 
   context = new webkitAudioContext();
   
@@ -135,11 +160,6 @@ $(document).ready(function() {
   $('#button3').html('<img src="assets/example/thumb.jpg" /><img class="overlay" src="css/glossy.png" />');
   $('#button15').html('<img src="assets/example/cowbell.gif" /><img class="overlay" src="css/glossy.png" />');
   */
-  
-  $('.button').click(function() {
-    buttonclick($(this).data('id'));
-  });
-  
   $('.pushbutton').mousedown(function() {
     $(this).addClass('pushed');
   });
@@ -157,15 +177,26 @@ $(document).ready(function() {
       request.onload = function() {
       	buffer = context.createBuffer(request.response, false);
         bufferLoaded = true;
-        $('#loading').hide();
-        $('#machine').show();
+        $('#loading').fadeOut(500);
+        $('#machine').delay(250).fadeIn(500);
+
+        create_buttons(n);
+  
+        $('.button').click(function() {
+          buttonclick($(this).data('id'));
+        });
+        
+        populateSamples(0);
+  
       }
       request.send();
   }
 
   function init() {
-
-  	loadBuffer('assets/example/TRRBHAK139155E1516.mp3');
+    
+    var buffer_url = 'assets/'+vids[0]+'/'+vids[0]+'.mp3';
+    console.log('loadBuffer from ' + buffer_url);
+  	loadBuffer(buffer_url);
 
   	var finalMixNode;
   	if (context.createDynamicsCompressor) {
