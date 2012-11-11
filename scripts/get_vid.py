@@ -7,38 +7,55 @@ Saves track analysis as "<output_name>_info.json"
 
 usage = """
 Usage:
-    python get_vid.py <video_url> <output_name (no extension)>
+    python get_vid.py <video_url>
 
 Example:
-    python get_vid.py http://www.youtube.com/watch?v=FGBhQbmPwH8 one_more_time
+    python get_vid.py http://www.youtube.com/watch?v=FGBhQbmPwH8
 
 Output:
-    one_more_time.mpg
-    one_more_time_slices.json
-    one_more_time_info.json
+    in directory ../assets/FGBhQbmPwH8
+    FGBhQbmPwH8.mpg
+    FGBhQbmPwH8.mp3
+    FGBhQbmPwH8_slices.json
+    FGBhQbmPwH8_info.json
 """
 import sys
 import echonest.audio as audio
 import echonest.video as video
+import os
+import errno
 
-def main(input_filename, output_filename):
-    if(input_filename.startswith("http://")):
-        #Download youtube video
-        youtube_seq = video.loadavfromyoutube(youtube_url)
-        #Save video
-        youtube_seq.save(output_filename+".mpg")
-    else:
-        youtube_seq = video.loadav(input_filename)
+def mkdir(directory):
+    """
+    Makes directory if not already created
+    """
+    try:
+        os.makedirs(directory)
+    except OSError, e:
+        if e.errno != errno.EEXIST:
+            raise
+
+def main(input_filename):
+    output_filename = input_filename.split("=",1)[1]
+    output_dir = "../assets/{}/".format(output_filename)
+    mkdir(output_dir)
+
+    #Download youtube video
+    youtube_seq = video.loadavfromyoutube(input_filename)
+
+    #Save video
+    #youtube_seq.save(output_dir+output_filename+".mpg")
+
+    #Save audio
+    youtube_seq.audio.encode(output_dir+output_filename+".mp3")
 
     #Make output json for slices
-    filename = output_filename + "_slices.json"
+    filename = output_dir + output_filename + "_slices.json"
     slices = open(filename, "w")
-    slices.write('var {0} = '.format(output_filename)+'{ \n')
-    slices.write('\t "bars":[ \n')
+    slices.write('{ \n\t "bars":[ \n')
     #only get the audio part
     av_audio = youtube_seq.audio
     #write bars
-
     for bar in av_audio.analysis.bars:
         slices.write('\t\t{\n')
         slices.write('\t\t\t"start:"{},\n'.format(bar.start))
@@ -46,6 +63,7 @@ def main(input_filename, output_filename):
         slices.write('\t\t}\n')
     slices.write('\t]\n')
     slices.write('\t "beats":[ \n')
+
     #Write beats
     for beat in av_audio.analysis.beats:
         slices.write('\t\t{\n')
@@ -57,7 +75,7 @@ def main(input_filename, output_filename):
     slices.close()
 
     #write info
-    filename = output_filename + "_info.json"
+    filename = output_dir + output_filename + "_info.json"
     info = open(filename, "w")
     key = av_audio.analysis.key['value']
     tempo = av_audio.analysis.tempo['value']
@@ -73,8 +91,7 @@ def main(input_filename, output_filename):
 if __name__ == '__main__':
     try:
         input_filename = sys.argv[1]
-        output_filename = sys.argv[2]
     except:
         print usage
         sys.exit(-1)
-    main(input_filename, output_filename)
+    main(input_filename)
