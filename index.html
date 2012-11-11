@@ -10,14 +10,20 @@
 <body>
 <div id="loading">
   <img src="css/biglogo.png" style="biglogo" /><br />
+  <img src="css/echonest.png" style="margin-top:-100px" /><br />
   Loading Samples <span id="progress"></span>
 </div>
 <div id="machine" style="display: none;">
   <div id="controls">
   <div id="lcd">
-    <img src="assets/example/thumb.jpg" class="thumb" />
-    <div id="row1">Harder Better Faster Stronger</div>
-    <div id="row2">Daft Punk</div>
+    <!--<img src="assets/example/thumb.jpg" class="thumb" />-->
+    <div id="row1">Loading</div>
+    <div id="row2">...</div>
+    <div id="meta">
+      <span id="bpm">100</span><br />
+      <span id="key">C</span><br style="clear" />
+      <span id="duration">1:00</span>
+    </div>
     <div class="overlay"></div>
     <div id="updown">
       <a href="#" id="down"><img src="css/down.png"></a>
@@ -92,27 +98,78 @@
 <script language="javascript">
 // array of video ids 
 
-var vids = new Array('6kw1UVovByw','ofaRvNOV4SI');
+var vids = new Array('qwQLk7NcpO4','ncXMkiwOZF0','lJtHNEDnrnY',
+  'J---aiyznGQ','gG_dA32oH44','FGBhQbmPwH8','4ohkCQp4xL0');
 var vid_metadata = new Array();
 vid_metadata[0] = {
-  "title":"James Bond: Skyfall",
-  "artist":"Theatrical Trailer",
-    "duration": 153.19619, 
-    "height": 81, 
-    "key": "A#", 
-    "tempo": 72.554, 
-    "time_signature": 4, 
-    "width": 145
+  "title":"Amen Break",
+  "artist":"Gregory Coleman",
+  "duration": 21.22558, 
+  "height": 81, 
+  "key": "D#", 
+  "tempo": 120.127, 
+  "time_signature": 4, 
+  "width": 145
 };
 vid_metadata[1] = {
-  "title":"Title",
-  "artist":"Artist",
-    "duration": 153.19619, 
-    "height": 81, 
-    "key": "A#", 
-    "tempo": 72.554, 
-    "time_signature": 4, 
-    "width": 145
+  "title":"Breathe (Krewella Vocal Edit)",
+  "artist":"Skrillex",
+  "duration": 198.1268, 
+  "height": 108, 
+  "key": "F#", 
+  "tempo": 139.955, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[2] = {
+  "title":"Gangnam Style",
+  "artist":"MIT version",
+  "duration": 302.25088, 
+  "height": 81, 
+  "key": "b", 
+  "tempo": 131.979, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[3] = {
+  "title":"Keyboard Cat",
+  "artist":"Play him off!",
+  "duration": 55.01601, 
+  "height": 108, 
+  "key": "f", 
+  "tempo": 92.983, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[4] = {
+  "title":"Ni**az in Paris",
+  "artist":"Jay-Z and Kanye West",
+  "duration": 251.33823, 
+  "height": 81, 
+  "key": "f", 
+  "tempo": 140.215, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[5] = {
+  "title":"One More Time",
+  "artist":"Daft Punk",
+  "duration": 321.94721, 
+  "height": 108, 
+  "key": "D", 
+  "tempo": 122.838, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[6] = {
+  "title":"Falcon Jab",
+  "artist":"Ratatat",
+  "duration": 235.56027, 
+  "height": 106, 
+  "key": "f", 
+  "tempo": 110.205, 
+  "time_signature": 4, 
+  "width": 145
 };
 
 // array of json objects corresponding to the array of video ids
@@ -121,22 +178,31 @@ var vid_slices = new Array();
 // number of videos loaded (obsolete since script inclusion on document ready)
 var vids_loaded = 0;
 </script>
-
-<script src="ajax.php?i=0&vid=6kw1UVovByw" language="javascript"></script>
-<script src="ajax.php?i=1&vid=ofaRvNOV4SI" language="javascript"></script>
-<script src="ajax.php?i=2&vid=boomerang" language="javascript"></script>
+  
+<script src="ajax.php?i=0&vid=qwQLk7NcpO4" language="javascript"></script>
+<script src="ajax.php?i=1&vid=ncXMkiwOZF0" language="javascript"></script>
+<script src="ajax.php?i=2&vid=lJtHNEDnrnY" language="javascript"></script>
+<script src="ajax.php?i=3&vid=J---aiyznGQ" language="javascript"></script>
+<script src="ajax.php?i=4&vid=gG_dA32oH44" language="javascript"></script>
+<script src="ajax.php?i=5&vid=FGBhQbmPwH8" language="javascript"></script>
+<script src="ajax.php?i=6&vid=4ohkCQp4xL0" language="javascript"></script>
 
 <script language="javascript">
 // default selected button index (no pad selected)
 var selected = -1;
 var current_vid = 0;
 
-// convert seconds to mm:ss.00 format
+var multiple_selection_mode = false; 
+var multiple_selection_start;
+var multiple_selection_end;
+
+// convert seconds to mm:ss format
 function convertTimestamp(seconds) {
   var s = seconds;
   var m = Math.floor(seconds / 60);
   s = s - m * 60;
-  return sprintf("%02d:%02d.%02d", m, s, (s - Math.floor(s))*100);
+  //return sprintf("%02d:%02d.%02d", m, s, (s - Math.floor(s))*100);
+  return sprintf("%02d:%02d", m, s);
 }
 
 // webkit web audio context 
@@ -206,6 +272,23 @@ var map    = new Array(49, 50, 51, 52, 81, 87, 69, 82, 65, 83, 68, 70, 90, 88, 6
 var keymap = new Array('1','2','3','4','Q','W','E','R','A','S','D','F','Z','X','C','V');
 
 function keydown(evt) {
+  
+  if (evt.which == 39) {  // right arrow
+      
+  }
+
+  if (evt.which == 37) {  // left arrow
+      
+  }
+
+  if (evt.which ==38 ) {  // up arrow
+      
+  }
+
+  if (evt.which == 40  ) {  // down arrow
+      
+  }
+
   // check which button was pressed
   for (var i = 0; i < 16; i++) {
     // button i was pressed
@@ -363,6 +446,9 @@ function mapSamples(beat) {
 
 // populate the sample browser using samples from video vids[i] 
 function populateSamples(i) {
+  update_vid_lcd();
+  
+  
   // clear beatbrowser
   $('#beatbrowser').html('');
   var slices = vid_slices[i];
@@ -391,18 +477,62 @@ function populateSamples(i) {
     // todo: drag and drop (activate state and record start position 
     // on mousedown and deactivate on mouseup and record end position
     beat.click(function(evt) {
-      $('#beatbrowser span').removeClass('selected');
+      
+      
+      /*$('#beatbrowser span').removeClass('selected');
       playNote(buffers[current_vid], 0, $(this).data('start'), $(this).data('duration'));
       mapSamples($(this));
       $(this).addClass('selected');
+      // beat_selected = beat.data('bid');*/
       
     });
+    
+    beat.mousedown(function(evt) {
+      multiple_selection_mode = true;
+      multiple_selection_start = $(this);
+      
+      var url = sprintf("url('assets/%s/%s.jpg')", vids[current_vid],vids[current_vid]);
+      var xpos = ($(this).data('bid') * 145) % 10000;
+      var ypos = Math.floor(($(this).data('bid') * 145) / 10000) * vid_metadata[current_vid].height;
+      var thumbnail = $(sprintf('<div style="background:%s -%dpx -%dpx"></div>',
+        url, xpos, ypos));
+      thumbnail.css('width', '145px');
+      thumbnail.css('height', '81px');
+      thumbnail.css('margin', '32px 0px 0px 0px');
+      thumbnail.css('position', 'relative');
+      thumbnail.css('z-index', '100');
+      $('#button' + selected).html($(thumbnail));
+      $('#button' + selected).css('background-color', 'rgba(0,0,0,0.5)');
+      $('<img class="overlay" src="css/glossy.png" />').appendTo($('#button' + selected));
+    });
+    
+    beat.mouseup(function(evt) {
+      if (multiple_selection_mode) {
+        multiple_selection_end = $(this);
+        var combined = $('<span class="beat" style="display:none"></span>');
+        combined.data('start', multiple_selection_start.data('start'));
+        combined.data('duration', multiple_selection_end.data('start') - multiple_selection_start.data('start') + multiple_selection_end.data('duration'));
+        combined.data('bid', multiple_selection_start.data('bid'));
+        combined.data('vid', multiple_selection_start.data('vid'));
+        mapSamples(combined);
+        var startbid = multiple_selection_start.data('bid');
+        var endbid = multiple_selection_end.data('bid');
+        $('#beatbrowser span').removeClass('selected');
+        for (var k = startbid; k <= endbid; k++) {
+          $(sprintf('#%d-%d', i, k)).addClass('selected');
+        }
+        playNote(buffers[i], 0, combined.data('start'), combined.data('duration'));
+      }
+      multiple_selection_mode = false;
+    });
+    
     // update info screen on hover(mousein, mouseout)
     beat.hover(function(evt) {
       $('#info3').html(sprintf('%s Beat %03d', 
         convertTimestamp($(this).data('start')), 
         $(this).data('bid')));
       $('#info3').css('opacity','1.0');
+      
     },
     function(evt) {
       $('#info3').css('opacity','0.5');
@@ -417,12 +547,22 @@ function update_vid_lcd() {
   
   $('#row1').html(metadata.title);
   $('#row2').html(metadata.artist);
+  var bpm = metadata.tempo;
+  var key = metadata.key;
+  var duration = convertTimestamp(metadata.duration);
+  $('#bpm').html(sprintf('BPM: %d',bpm));
+  $('#key').html('KEY:  ' + key);
+  $('#duration').html('T: ' + duration);
   
 }
 
 function next_vid() {
   if (current_vid < vids.length - 1) {
     current_vid = current_vid + 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
+  } else {
+    current_vid = 0;
     update_vid_lcd();
     populateSamples(current_vid);
   }
@@ -433,6 +573,10 @@ function prev_vid() {
     current_vid = current_vid - 1;
     update_vid_lcd();
     populateSamples(current_vid);
+  } else {
+    current_vid = vids.length - 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
   }
 }
 
@@ -441,9 +585,11 @@ $(document).ready(function() {
   context = new webkitAudioContext();
   
   /*
-  $('#button3').html('<img src="assets/example/thumb.jpg" /><img class="overlay" src="css/glossy.png" />');
-  $('#button15').html('<img src="assets/example/cowbell.gif" /><img class="overlay" src="css/glossy.png" />');
+  $('#button3').html('<div /><img class="overlay" src="css/glossy.png" />');
   */
+  
+  // $('#button15').html('<img src="assets/example/cowbell.gif" /><img class="overlay" src="css/glossy.png" />');
+  
   
   $('.pushbutton').mousedown(function() { $(this).addClass('pushed'); });
   $('.pushbutton').mouseup(function() { $(this).removeClass('pushed'); });
@@ -456,16 +602,19 @@ $(document).ready(function() {
   $('#down').click(function(evt) { next_vid(); });
   $('#up').click(function(evt) { prev_vid(); });
 
+  var numLoaded = 0;
+  
   function loadBuffer(url, i) {
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
       request.responseType = "arraybuffer";
       request.onload = function() {
-      	buffers[i] = context.createBuffer(request.response, false);
-
-        $('#progress').html(sprintf('%d/%d', i+1, vids.length));
+      	numLoaded++;
+        buffers[i] = context.createBuffer(request.response, false);
         
-        if (i+1 == vids.length) {
+        $('#progress').html(sprintf('%d/%d', numLoaded, vids.length));
+        
+        if (numLoaded == vids.length) {
           // hide loading screen
           $('#loading').fadeOut(500);
           // show machine 

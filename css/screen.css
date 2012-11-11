@@ -15,9 +15,9 @@ body {
 #loading {
     width: 100%;
     height: 100%;
-    margin-top:10px;
+    margin-top:0px;
     color: #fff;
-    font-size: 64px;
+    font-size: 32px;
     text-align:center;
 }
 #loading img {
@@ -104,6 +104,7 @@ body {
   -webkit-border-radius: 7px;
   border-radius: 7px;
   opacity: 0.3;
+  z-index: 200;
 }
 
 .selected {
@@ -156,13 +157,23 @@ body {
   height: 85px;
 }
 
+#meta {
+    float: left;
+    font-family: 'bpdotssquareslight';
+    font-size:18px;
+    width: 100px;
+    margin-left: -55px;
+    margin-top: -30px;
+  line-height: 20px;
+}
 
 div#lcd {
     position: relative;
   background: #10101a;
   border: 2px solid #000;
     font-family: Helvetica, Arial;
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 27px;
 	color: #ccf;
     text-shadow: 0 0 5px #88d;
 
@@ -247,13 +258,13 @@ div#sample-controls .togglebutton {
 }
 
 div#oneshotbutton.active {
-  border-top: 1px solid rgb(247,150,33);
-  border-bottom: 3px solid rgb(227,140,25);
-  border-left: 1px solid rgb(247,150,33);
-  border-right: 1px solid rgb(247,150,33);
-  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,228,109)), color-stop(100%,rgb(247,150,33)));
-  background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
-  background: radial-gradient(ellipse at center,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
+  border-top: 1px solid rgb(247,90,120);
+  border-bottom: 3px solid rgb(227,50,80);
+  border-left: 1px solid rgb(247,90,120);
+  border-right: 1px solid rgb(247,90,120);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,209,225)), color-stop(100%,rgb(247,150,53)));
+  background: -webkit-radial-gradient(center, ellipse cover,  rgb(255, 209,225) 0%,rgb(247,90,140) 100%);
+  background: radial-gradient(ellipse at center,  rgb(255,209,225) 0%,rgb(247,90,140) 100%);
 }
 
 
@@ -269,13 +280,13 @@ div#loopbutton.active {
 
 
 div#mutebutton.active {
-  border-top: 1px solid rgb(247,33,33);
-  border-bottom: 3px solid rgb(227,25,25);
-  border-left: 1px solid rgb(247,33,33);
-  border-right: 1px solid rgb(247,33,33);
-  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,109,109)), color-stop(100%,rgb(247,150,33)));
-  background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,109,109) 0%,rgb(247,33,33) 100%);
-  background: radial-gradient(ellipse at center,  rgb(255,109,109) 0%,rgb(247,33,33) 100%);
+  border-top: 1px solid rgb(247,150,33);
+  border-bottom: 3px solid rgb(227,140,25);
+  border-left: 1px solid rgb(247,150,33);
+  border-right: 1px solid rgb(247,150,33);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,228,109)), color-stop(100%,rgb(247,150,33)));
+  background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
+  background: radial-gradient(ellipse at center,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
 }
 
 
@@ -405,6 +416,7 @@ div#beatbrowser span {
     border: 1px solid #342;
     background: #675;
     float:left;    
+    cursor:crosshair;
 }
 div#beatbrowser span.selected {
     background: #342;
