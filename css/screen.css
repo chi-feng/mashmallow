@@ -121,6 +121,14 @@ body {
   -webkit-box-shadow: 0 0 25px rgba(255, 120, 160, 1); 
 }
 
+
+.looping {
+	background-color: #cfa;
+	border-color: #ac8;
+	box-shadow: 0 0 25px rgba(160, 255, 120, 1);
+  -webkit-box-shadow: 0 0 25px rgba(160, 255, 120, 1); 
+}
+
 .activated img {
   opacity: 0.4;
 }
@@ -150,6 +158,7 @@ body {
 
 
 div#lcd {
+    position: relative;
   background: #10101a;
   border: 2px solid #000;
     font-family: Helvetica, Arial;
@@ -354,11 +363,11 @@ float:left;
   height: 42px;
   background: #888;
   margin: 10px;
-  margin-right 8px;
+  margin-right: 8px;
   border-top: 1px solid #999;
-  border-bottom: 5px solid #444;
-  border-left: 2px solid #666;
-  border-right: 2px solid #666;
+  border-bottom: 4px solid #444;
+  border-left: 1px solid #666;
+  border-right: 1px solid #666;
   -webkit-border-radius: 4px;
   border-radius: 4px;
 
@@ -378,7 +387,7 @@ float:left;
 }
 
 .pushed {
-  margin-top: 12px;
+  margin-top: 11px;
   border-bottom: 3px solid #444;
   background: rgb(255,228,109);
 
@@ -397,6 +406,10 @@ div#beatbrowser span {
     background: #675;
     float:left;    
 }
+div#beatbrowser span.selected {
+    background: #342;
+}
+
 
 div#beatbrowser span.downbeat {
     margin-left: 10px;
@@ -498,4 +511,32 @@ img.silkscreen {
 
 #beatbrowser {
     margin-left: -5px;
+}
+
+#up img { 
+    opacity: 0.5;
+}
+#down img { 
+    opacity: 0.5;
+}
+
+#up {
+    display:block;
+    position:absolute;
+    top:15px;
+    right: 15px;
+} 
+
+#down {
+    display:block;
+    position:absolute;
+    bottom:15px;
+    right: 15px;
+}
+
+#down img:hover {
+    opacity: 1.0;
+}
+ #up img:hover {
+    opacity: 1.0;
 }

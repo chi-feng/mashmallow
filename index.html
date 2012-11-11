@@ -10,19 +10,19 @@
 <body>
 <div id="loading">
   <img src="css/biglogo.png" style="biglogo" /><br />
-  Loading Samples...
+  Loading Samples <span id="progress"></span>
 </div>
 <div id="machine" style="display: none;">
   <div id="controls">
   <div id="lcd">
-    <div id="updown">
-      <a href="" id="down"></a>
-      <a href="" id="up"></a>
-    </div>
     <img src="assets/example/thumb.jpg" class="thumb" />
     <div id="row1">Harder Better Faster Stronger</div>
     <div id="row2">Daft Punk</div>
     <div class="overlay"></div>
+    <div id="updown">
+      <a href="#" id="down"><img src="css/down.png"></a>
+      <a href="#" id="up"><img src="css/up.png"></a>
+    </div>
   </div>
   <div id="sample-controls">
     <div id="oneshotbutton" class="togglebutton"><img src="css/one_shot.png" /></div>
@@ -40,11 +40,10 @@
   <img src="css/assetbrowser.png" class="silkscreen" />
   <div id="browser">
     <div id="instructions">
-      <ul style="margin-left:30px;">
-        <li>Step 1: Learn to play.</li>
-        <li>Step 2: ...</li>
-        <li>Step 3: Profit $$$</li>
-      </ul>
+      <p>Choose sample source above</p>
+      <p>Click on pad to load sample</p>
+      <p>Pick sample from Asset Browser</p>
+      <p>Hit keys to play samples</p>
     </div>
     <div id="beatbrowser" style="display:none">
     </div>
@@ -92,20 +91,45 @@
 
 <script language="javascript">
 // array of video ids 
-var vids = new Array('ofaRvNOV4SI');
+
+var vids = new Array('6kw1UVovByw','ofaRvNOV4SI');
+var vid_metadata = new Array();
+vid_metadata[0] = {
+  "title":"James Bond: Skyfall",
+  "artist":"Theatrical Trailer",
+    "duration": 153.19619, 
+    "height": 81, 
+    "key": "A#", 
+    "tempo": 72.554, 
+    "time_signature": 4, 
+    "width": 145
+};
+vid_metadata[1] = {
+  "title":"Title",
+  "artist":"Artist",
+    "duration": 153.19619, 
+    "height": 81, 
+    "key": "A#", 
+    "tempo": 72.554, 
+    "time_signature": 4, 
+    "width": 145
+};
+
 // array of json objects corresponding to the array of video ids
 // access data like vid_slices[0].beats
 var vid_slices = new Array();
 // number of videos loaded (obsolete since script inclusion on document ready)
 var vids_loaded = 0;
-// default selected button index (no pad selected)
-var selected = -1;
 </script>
 
-<script src="ajax.php?i=0&vid=ofaRvNOV4SI" language="javascript"></script>
-<script src="ajax.php?i=1&vid=boomerang" language="javascript"></script>
+<script src="ajax.php?i=0&vid=6kw1UVovByw" language="javascript"></script>
+<script src="ajax.php?i=1&vid=ofaRvNOV4SI" language="javascript"></script>
+<script src="ajax.php?i=2&vid=boomerang" language="javascript"></script>
 
 <script language="javascript">
+// default selected button index (no pad selected)
+var selected = -1;
+var current_vid = 0;
 
 // convert seconds to mm:ss.00 format
 function convertTimestamp(seconds) {
@@ -191,15 +215,25 @@ function keydown(evt) {
       // if a note was played, then stop the note now 
       if (button.data('note')) {
         button.data('note').noteOff(0);
+        if (button.data('loop_id')) {
+          clearInterval(button.data('loop_id'));
+          button.removeClass('looping');
+          button.removeData('loop_id');
+          return;
+        }
       }
       // play a new note using the button's internal data if exists
       var note;
       if (button.data('start')) {
-        note = playNote(buffer, 0, button.data('start'), button.data('duration'));
+        note = playNote(buffers[button.data('vid')], 0, button.data('start'), button.data('duration'));
       }
       // mark as activated (glow pink or green)
       if (button.data('mode') && button.data('mode') == 'loop') {
         button.addClass('looping');
+        var loop_id = setInterval(function() {
+          note = playNote(buffers[button.data('vid')], 0, button.data('start'), button.data('duration'));
+        }, button.data('duration') * 1000);
+        button.data('loop_id', loop_id);
       } else {
         button.addClass('activated');
       }
@@ -329,10 +363,13 @@ function mapSamples(beat) {
 
 // populate the sample browser using samples from video vids[i] 
 function populateSamples(i) {
+  // clear beatbrowser
+  $('#beatbrowser').html('');
   var slices = vid_slices[i];
   var beats = slices.beats; 
   var bars = slices.bars;
   var counter = -1;
+  var zebra = -1;
   // for each beat 
   for (var j = 0; j < beats.length; j++) {
     // create DOM object for beat (add class for downbeats)
@@ -341,6 +378,10 @@ function populateSamples(i) {
       counter = 0;
       beat.addClass('downbeat');
     }
+    if (zebra++ < 64) {
+      
+    }
+    
     // add data fields to beats 
     beat.data('vid', i);
     beat.data('bid', j);
@@ -350,8 +391,11 @@ function populateSamples(i) {
     // todo: drag and drop (activate state and record start position 
     // on mousedown and deactivate on mouseup and record end position
     beat.click(function(evt) {
-      playNote(buffer, 0, $(this).data('start'), $(this).data('duration'));
+      $('#beatbrowser span').removeClass('selected');
+      playNote(buffers[current_vid], 0, $(this).data('start'), $(this).data('duration'));
       mapSamples($(this));
+      $(this).addClass('selected');
+      
     });
     // update info screen on hover(mousein, mouseout)
     beat.hover(function(evt) {
@@ -365,6 +409,30 @@ function populateSamples(i) {
     });
     // add beat object to the beat browser
     beat.appendTo('#beatbrowser');
+  }
+}
+
+function update_vid_lcd() {
+  var metadata = vid_metadata[current_vid];
+  
+  $('#row1').html(metadata.title);
+  $('#row2').html(metadata.artist);
+  
+}
+
+function next_vid() {
+  if (current_vid < vids.length - 1) {
+    current_vid = current_vid + 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
+  }
+}
+
+function prev_vid() {
+  if (current_vid > 0) {
+    current_vid = current_vid - 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
   }
 }
 
@@ -385,6 +453,8 @@ $(document).ready(function() {
   $('#oneshotbutton').click(function(evt) { if (selected >= 0) set_mode('oneshot'); });
   $('#mutebutton').click(function(evt) { if (selected >= 0) set_mode('mute'); });
   $('#recordbutton').click(function(evt) { start_sequencer(); });
+  $('#down').click(function(evt) { next_vid(); });
+  $('#up').click(function(evt) { prev_vid(); });
 
   function loadBuffer(url, i) {
       var request = new XMLHttpRequest();
@@ -393,18 +463,20 @@ $(document).ready(function() {
       request.onload = function() {
       	buffers[i] = context.createBuffer(request.response, false);
 
-        // hide loading screen
-        $('#loading').fadeOut(500);
-        // show machine 
-        $('#machine').delay(250).fadeIn(500);
-        // generate pads 
-        create_buttons(n);
-        // attach event handlers to newly generated pads 
-        $('.button').click(function() { buttonclick($(this).data('id')); });
+        $('#progress').html(sprintf('%d/%d', i+1, vids.length));
         
-        // load interface elements for video 0
-        populateSamples(0);
-  
+        if (i+1 == vids.length) {
+          // hide loading screen
+          $('#loading').fadeOut(500);
+          // show machine 
+          $('#machine').delay(500).fadeIn(500);
+          // generate pads 
+          create_buttons(n);
+          // attach event handlers to newly generated pads 
+          $('.button').click(function() { buttonclick($(this).data('id')); });
+          // load interface elements for video 0
+          populateSamples(0);
+        }
       }
       request.send();
   }
