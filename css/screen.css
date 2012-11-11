@@ -38,10 +38,11 @@ body {
 }
 
 #panel {
+    float:left;
     width:730px;
-    margin: 25px 0px 0px 25px;
-    padding-bottom: 20px;
-    height: 720px;
+    margin: 0px 0px 0px 25px;
+    padding-bottom: 10px;
+    height: 710px;
     background-image: url('panelbg.png');
     -webkit-border-radius: 10px;
     border-radius: 10px;
@@ -49,10 +50,12 @@ body {
 
 .button span {
 	display: block;
-	color: #fff;
+	color: #555;
+
+    text-shadow: 0px 2px 2px rgba(255,255,255,0.25);
 	font-size: 36px;
 	text-align:center;
-	margin-top: 45px;
+	margin-top: 50px;
 	height: 145px;
 }
 
@@ -79,6 +82,8 @@ body {
 	background-image: url('buttonvignette.png');
   position:relative;
   display:none;
+  -webkit-transition: all 0.03s ease-out; 
+    transition: all 0.03s ease-out;
 }
 
 .button img {
@@ -110,10 +115,10 @@ body {
 }
 
 .activated {
-	background-color: #faa;
-	border-color: #c88;
-	box-shadow: 0 0 25px rgba(255, 120, 120, 1);
-  -webkit-box-shadow: 0 0 25px rgba(255, 120, 120, 1); 
+	background-color: #fac;
+	border-color: #c8a;
+	box-shadow: 0 0 25px rgba(255, 120, 160, 1);
+  -webkit-box-shadow: 0 0 25px rgba(255, 120, 160, 1); 
 }
 
 .activated img {
@@ -127,8 +132,6 @@ body {
 	margin-right: 0px;
 	margin-top:0px;
 	background-image: url('btrans.png');
-
-    -webkit-perspective: 500;
 }
 
 #logo {
@@ -164,15 +167,14 @@ div#lcd {
   border-radius: 7px;
   -webkit-box-shadow: inset 0 10px 40px rgba(0, 0, 0, 0.8);
   box-shadow:         inset 0 10px 40px rgba(0, 0, 0, 0.8);
-/*  -webkit-transform: rotateX(-15deg) translateY(-5px);*/
 }
 div#lcd .overlay {
   width: 435px;
   height: 80px;
   padding: 10px;
-  position: absolute;
-  top:21px;
-  left:21px;
+  position: relative;
+  margin-left:-10px;
+  margin-top:-10px;
   background-image: url('glossyinfo.png');
   -webkit-border-radius: 7px;
   border-radius: 7px;
@@ -198,7 +200,6 @@ div#lcd #row1 {
     margin-left: 10px;
     margin-top:9px;
     font-size: 22px;
-    
 }
 
 div#lcd #row2 {
@@ -236,17 +237,38 @@ div#sample-controls .togglebutton {
     
 }
 
-div#sample-controls .togglebutton:hover {
+div#oneshotbutton.active {
   border-top: 1px solid rgb(247,150,33);
   border-bottom: 3px solid rgb(227,140,25);
   border-left: 1px solid rgb(247,150,33);
   border-right: 1px solid rgb(247,150,33);
-  
   background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,228,109)), color-stop(100%,rgb(247,150,33)));
   background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
   background: radial-gradient(ellipse at center,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
-  
 }
+
+
+div#loopbutton.active {
+  border-top: 1px solid rgb(150,247,33);
+  border-bottom: 3px solid rgb(140,227,25);
+  border-left: 1px solid rgb(150,247,33);
+  border-right: 1px solid rgb(150,247,33);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(228,255,109)), color-stop(100%,rgb(150,247,33)));
+  background: -webkit-radial-gradient(center, ellipse cover,  rgb(228,255,109) 0%,rgb(150,247,33) 100%);
+  background: radial-gradient(ellipse at center,  rgb(228,255,109) 0%,rgb(150,247,33) 100%);
+}
+
+
+div#mutebutton.active {
+  border-top: 1px solid rgb(247,33,33);
+  border-bottom: 3px solid rgb(227,25,25);
+  border-left: 1px solid rgb(247,33,33);
+  border-right: 1px solid rgb(247,33,33);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,109,109)), color-stop(100%,rgb(247,150,33)));
+  background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,109,109) 0%,rgb(247,33,33) 100%);
+  background: radial-gradient(ellipse at center,  rgb(255,109,109) 0%,rgb(247,33,33) 100%);
+}
+
 
 div#info {  background: #786;
   border-bottom: 2px solid #796;
@@ -254,9 +276,10 @@ div#info {  background: #786;
   border-left: 2px solid #564;
   border-right: 2px solid #564;
   float:left;
-    font-family: 'digital-7_monomono';
-  font-size: 36px;
-    color: #99a;
+  font-family: 'digital-7_monomono';
+  font-size: 28px;
+  line-height:34px;
+  color: #231;
   width: 390px;
   height: 100px;
   margin-left:20px;
@@ -264,8 +287,8 @@ div#info {  background: #786;
   padding: 10px;
   -webkit-border-radius: 7px;
   border-radius: 7px;
-   -webkit-box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-   box-shadow:         inset 0 0 20px rgba(0, 0, 0, 0.8);
+  -webkit-box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  box-shadow:         inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
 div#info #editbutton img {
@@ -274,6 +297,9 @@ div#info #editbutton img {
     width: 60px;
     clear:both;
     margin-top: 7px;
+    opacity: 0.5;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
 }
 
 div#info #loadbutton img {
@@ -281,34 +307,10 @@ div#info #loadbutton img {
     margin-top: 3px;
     margin-right: 8px;
     width:60px;
+    opacity:0.5;
+  -webkit-border-radius: 2px;
+  border-radius: 2px; 
 }
-
-div#info img:hover {
-    opacity: 0.6;
-}
-
-/*
-div#info {
-  background: #786;
-  float:left;
-  border-bottom: 2px solid #786;
-  border-top: 2px solid #453;
-  border-left: 2px solid #564;
-  border-right: 2px solid #564;
-	font-family: 'digital-7_monomono';
-  font-size: 36px;
-	color: #342;
-  width: 390px;
-  height: 70px;
-  margin-left:20px;
-  margin-top: 20px;
-  padding: 10px;
-  -webkit-border-radius: 7px;
-  border-radius: 7px;
-   -webkit-box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-   box-shadow:         inset 0 0 20px rgba(0, 0, 0, 0.8);
-}
-*/
 
 div#browser {
   background: #786;
@@ -316,19 +318,24 @@ div#browser {
   border-top: 2px solid #453;
   border-left: 2px solid #564;
   border-right: 2px solid #564;
-	font-family: 'Helvetica';
-  font-size: 24px;
-	color: #342;
+  font-family: 'digital-7_monomono';
+  font-size: 28px;
+  line-height:34px;
+	color: #231;
   width: 435px;
   margin-left:20px;
-  margin-top: 20px;
+  margin-top: 0px;
   padding: 10px;
-  height: 380px;
+  height: 360px;
   -webkit-border-radius: 7px;
   border-radius: 7px;
    -webkit-box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
    box-shadow:         inset 0 0 20px rgba(0, 0, 0, 0.8);
    overflow: auto;
+}
+
+div#browser h2 {
+    font-size: 28px;
 }
 
 #browser ::-webkit-scrollbar{width:9px;height:9px;}
@@ -347,6 +354,7 @@ float:left;
   height: 42px;
   background: #888;
   margin: 10px;
+  margin-right 8px;
   border-top: 1px solid #999;
   border-bottom: 5px solid #444;
   border-left: 2px solid #666;
@@ -379,21 +387,22 @@ float:left;
   background: radial-gradient(ellipse at center,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
 }
 
-div#browser span {
+div#beatbrowser span {
     display:block;
     width: 20px;
     height:20px;
     margin-top: 3px;
     margin-left: 3px;
     border: 1px solid #342;
+    background: #675;
     float:left;    
 }
 
-div#browser span.downbeat {
+div#beatbrowser span.downbeat {
     margin-left: 10px;
 }
 
-div#browser span:hover {
+div#beatbrowser span:hover {
     background: #564;
 }
 
@@ -421,4 +430,72 @@ div#loopbutton img{
     margin-top:2px;
     margin-left:2px;
     width:28px;
+}
+
+div#beatmeter {
+    width: 730px;
+    height: 20px;
+    float:left;
+    margin: 20px 0px 5px 27px;
+}
+
+div#beatmeter .bar {
+    
+}
+
+
+.beat {
+    width: 34px;
+    height: 7px;
+    float: left;
+    margin-right: 12px;
+    margin-top: 0;
+
+    -webkit-transition: all 0.02s ease-out; 
+      transition: all 0.02s ease-out;
+    
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(128,114,51)), color-stop(100%,rgb(120,85,33)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgb(128,114,51) 0%,rgb(120,85,33) 100%);
+    background: radial-gradient(ellipse at center,  rgb(128,114,51) 0%,rgb(120,85,33) 100%);
+    
+}
+
+.downbeat {   
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(160,80,60)), color-stop(100%,rgb(120,40,33)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgb(160,80,60) 0%,rgb(120,40,33) 100%);
+    background: radial-gradient(ellipse at center,  rgb(160,80,60) 0%,rgb(120,40,33) 100%);
+
+}
+
+.beatactive {
+    background-color:#f00;
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,228,109)), color-stop(100%,rgb(247,150,33)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
+    background: radial-gradient(ellipse at center,  rgb(255,228,109) 0%,rgb(247,150,33) 100%);
+
+	box-shadow: 0 0 20px rgba(255, 190, 130, 1.0);
+  -webkit-box-shadow: 0 0 20px rgba(255,190,130,1.0); 
+}
+
+ .downbeatactive {
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,149,109)), color-stop(100%,rgb(247,63,33)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgb(255,149,109) 0%,rgb(247,63,33) 100%);
+    background: radial-gradient(ellipse at center,  rgb(255,149,109) 0%,rgb(247,63,33) 100%);
+
+	box-shadow: 0 0 20px rgba(255, 160, 130, 1.0);
+  -webkit-box-shadow: 0 0 20px rgba(255,160,130,1.0); 
+}
+
+img.silkscreen {
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    opacity:0.9;
+}
+
+#beatbrowser {
+    margin-left: -5px;
 }

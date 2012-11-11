@@ -25,3 +25,15 @@
     font-style: normal;
 
 }
+
+@font-face {
+    font-family: 'bpdotssquareslight';
+    src: url('bpdotssquarelight-webfont.eot');
+    src: url('bpdotssquarelight-webfont.eot?#iefix') format('embedded-opentype'),
+         url('bpdotssquarelight-webfont.woff') format('woff'),
+         url('bpdotssquarelight-webfont.ttf') format('truetype'),
+         url('bpdotssquarelight-webfont.svg#bpdotssquareslight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
