@@ -8,18 +8,31 @@
   <script src="js/sprintf.js"></script>
 </head>
 <body>
-<div id="machine">
+  <div id="loading">
+    Loading Samples
+  </div>
+<div id="machine" style="display: none;">
   <div id="controls">
-  
-  <div id="logo">
-    <img src="css/logo.png" />
-  </div>
-  
   <div id="lcd">
-    <div id="row1">&nbsp;</div>
-    <div id="row2">Load Sample</div>
+    <div id="updown">
+      <a href="" id="down"></a>
+      <a href="" id="up"></a>
+    </div>
+    <img src="assets/example/thumb.jpg" class="thumb" />
+    <div id="row1">Harder Better Faster Stronger</div>
+    <div id="row2">Daft Punk</div>
+    <div class="overlay"></div>
   </div>
-  
+  <div id="sample-controls">
+    <div id="onshotbutton" class="pushbutton"></div>
+    <div id="loopbutton" class="pushbutton"></div>
+  </div>
+  <div id="info">
+    <div id="info1">&nbsp;</div>
+    <div id="info2">&nbsp;</div>
+    <div id="info3">&nbsp;</div>
+  </div>
+  <br class="clear" />
   <div id="browser">
     Blah Blah Blah
   </div>
@@ -37,6 +50,8 @@
   <br class="clear" />
 </div>
 </div>
+<script src="assets/example/TRRBHAK139155E1516.var.js"></script>
+
 <script>
 
 var context;
@@ -47,6 +62,16 @@ var bufferLoaded = false;
 var masterGainNode;
 
 var n = 16;
+
+
+function playNote(buffer, when, offset, duration) {
+	var note = context.createBufferSource();
+	note.buffer = buffer;
+	note.playbackRate.value = 1.0;
+    note.connect(masterGainNode);
+	note.noteGrainOn(when, offset, duration);
+  return note; 
+}
 
 function create_buttons(n) {
   for (var i = 0; i < n; i++) {
@@ -63,9 +88,17 @@ var map = new Array(49, 50, 51, 52, 81, 87, 69, 82, 65, 83, 68, 70, 90, 88, 67, 
 function keydown(evt) {
   for (var i = 0; i < n; i++) {
     if (evt.which == map[i]) {
+      if ($('#button' + i).data('note')) {
+        $('#button' + i).data('note').noteOff(0);
+      }
+      var duration = TRRBHAK139155E1516.bars[i].duration;
+      var start = TRRBHAK139155E1516.bars[i].start;
+      var note = playNote(buffer, 0, start, duration);
+      
       $('#button' + i).addClass('activated');
-      $('#row1').html('Playing ' + sprintf('%02d', i));
-      $('<p>'+evt.timeStamp+'</p>').appendTo('#browser');
+      // $('<p>'+evt.timeStamp+'</p>').appendTo('#browser');
+      
+      $('#button' + i).data('note', note);
     }
   }
 }
@@ -83,12 +116,12 @@ function buttonclick(id) {
   if (button.data('selected') == 1) {
     button.data('selected', 0);
     button.removeClass('selected');
-    $('#row2').html('');
+    $('#info2').html('');
   } else {
     $('#panel').find('.selected').removeClass('selected').data('selected',0);
     button.data('selected', 1);
     button.addClass('selected');
-    $('#row2').html(sprintf('Selected #%02d',(id+1)));
+    $('#info2').html(sprintf('Selected #%02d',(id+1)));
   }
 }
 
@@ -118,14 +151,14 @@ $(document).ready(function() {
   $(document).keyup(keyup);
 
   function loadBuffer(url) {
-      console.log('Loading Buffer');
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
       request.responseType = "arraybuffer";
       request.onload = function() {
       	buffer = context.createBuffer(request.response, false);
-          bufferLoaded = true;
-          console.log('Buffer Loaded');
+        bufferLoaded = true;
+        $('#loading').hide();
+        $('#machine').show();
       }
       request.send();
   }
@@ -143,14 +176,6 @@ $(document).ready(function() {
   	masterGainNode = context.createGainNode();
   	masterGainNode.gain.value = 0.4; 
   	masterGainNode.connect(finalMixNode);
-  }
-
-  function playNote(buffer, when, offset, duration) {
-  	var note = context.createBufferSource();
-  	note.buffer = buffer;
-  	note.playbackRate.value = 1.0;
-      note.connect(masterGainNode);
-  	note.start(when, offset, duration);
   }
 
   init();
