@@ -24,6 +24,7 @@ import echonest.audio as audio
 import echonest.video as video
 import os
 import errno
+import json
 
 def mkdir(directory):
     """
@@ -52,26 +53,16 @@ def main(input_filename):
     #Make output json for slices
     filename = output_dir + output_filename + "_slices.json"
     slices = open(filename, "w")
-    slices.write('{ \n\t "bars":[ \n')
     #only get the audio part
     av_audio = youtube_seq.audio
-    #write bars
+    #make list of bars
+    bars = []
     for bar in av_audio.analysis.bars:
-        slices.write('\t\t{\n')
-        slices.write('\t\t\t"start:"{},\n'.format(bar.start))
-        slices.write('\t\t\t"duration:"{},\n'.format(bar.duration))
-        slices.write('\t\t}\n')
-    slices.write('\t]\n')
-    slices.write('\t "beats":[ \n')
-
-    #Write beats
+        bars.append({'start':bar.start, 'duration':bar.duration})
+    beats = []
     for beat in av_audio.analysis.beats:
-        slices.write('\t\t{\n')
-        slices.write('\t\t\t\"start:\":{},\n'.format(beat.start))
-        slices.write('\t\t\t\"duration:\":{},\n'.format(beat.duration))
-        slices.write('\t\t}\n')
-    slices.write('\t]\n')
-    slices.write('};\n')
+        beats.append({'start':beat.start, 'duration':beat.duration})
+    json.dump({"bars":bars,"beats":beats}, slices, sort_keys=True, indent=4)
     slices.close()
 
     #write info
@@ -81,10 +72,9 @@ def main(input_filename):
     tempo = av_audio.analysis.tempo['value']
     duration = av_audio.analysis.duration
     time_signature = av_audio.analysis.time_signature['value']
-    info.write('{"info":{\n\t')
-    info.write('"key":{0}, \n\t"tempo":{1},\n\t"duration":{2},\n\t"time_signature":{3}'
-                    .format(key, tempo, duration, time_signature))
-    info.write('\n}\n}')
+    json.dump({"key":key, "tempo":tempo,
+                "duration":duration, "time_signature":time_signature}, info,
+                sort_keys = True, indent=4)
     info.close()
 
 
