@@ -8,62 +8,245 @@
   <script src="js/sprintf.js"></script>
 </head>
 <body>
-  <div id="loading">
-    Loading Samples
-  </div>
+<div id="loading">
+  <img src="css/biglogo.png" style="biglogo" /><br />
+  <img src="css/echonest.png" style="margin-top:-100px" /><br />
+  Loading Samples <span id="progress"></span>
+</div>
 <div id="machine" style="display: none;">
   <div id="controls">
   <div id="lcd">
-    <div id="updown">
-      <a href="" id="down"></a>
-      <a href="" id="up"></a>
+    <!--<img src="assets/example/thumb.jpg" class="thumb" />-->
+    <div id="row1">Loading</div>
+    <div id="row2">...</div>
+    <div id="meta">
+      <span id="bpm">100</span><br />
+      <span id="key">C</span><br style="clear" />
+      <span id="duration">1:00</span>
     </div>
-    <img src="assets/example/thumb.jpg" class="thumb" />
-    <div id="row1">Harder Better Faster Stronger</div>
-    <div id="row2">Daft Punk</div>
     <div class="overlay"></div>
+    <div id="updown">
+      <a href="#" id="down"><img src="css/down.png"></a>
+      <a href="#" id="up"><img src="css/up.png"></a>
+    </div>
   </div>
   <div id="sample-controls">
-    <div id="onshotbutton" class="pushbutton"></div>
-    <div id="loopbutton" class="pushbutton"></div>
+    <div id="oneshotbutton" class="togglebutton"><img src="css/one_shot.png" /></div>
+    <div id="loopbutton" class="togglebutton"><img src="css/loop.png" /></div>
+    <div id="mutebutton" class="togglebutton"><img src="css/mute.png" /></div>
   </div>
   <div id="info">
+    <div id="loadbutton"><img src="css/loadbutton.png" /></div>
+    <div id="editbutton"><img src="css/editbutton.png" /></div>
     <div id="info1">&nbsp;</div>
     <div id="info2">&nbsp;</div>
     <div id="info3">&nbsp;</div>
   </div>
   <br class="clear" />
+  <img src="css/assetbrowser.png" class="silkscreen" />
   <div id="browser">
-    Blah Blah Blah
+    <div id="instructions">
+      <p>Choose sample source above</p>
+      <p>Click on pad to load sample</p>
+      <p>Pick sample from Asset Browser</p>
+      <p>Hit keys to play samples</p>
+    </div>
+    <div id="beatbrowser" style="display:none">
+    </div>
+    <div id="effectsbrowser" style="display:none">
+    </div>
   </div>
-  
-  
+  <div id="logo"><img src="css/logo.png" /></div>
   <div id="playbackcontrol">
-    <div id="playbutton" class="pushbutton"></div>
-    <div id="loopbutton" class="pushbutton"></div>
-    <div id="recordbutton" class="pushbutton"></div>
-    <div id="savebutton" class="pushbutton"></div>
+    <div id="playbutton" class="pushbutton"><img src="css/Play.png" /></div>
+    <div id="recordbutton" class="pushbutton"><img src="css/Rec.png" /></div>
+    <div id="trash" class="pushbutton"><img src="css/trash.png" /></div>
+    <div id="sharebutton" class="pushbutton"><img src="css/share.png" /></div>
   </div>
-  
+  </div>
+  <div id="beatmeter">
+    <div id="m1" class="bar">
+      <div id="b1" class="beat downbeat"></div>
+      <div id="b2" class="beat"></div>
+      <div id="b3" class="beat"></div>
+      <div id="b4" class="beat"></div>
+    </div>
+    <div id="m2" class="bar">
+      <div id="b5" class="beat downbeat"></div>
+      <div id="b6" class="beat"></div>
+      <div id="b7" class="beat"></div>
+      <div id="b8" class="beat"></div>
+    </div>
+    <div id="m3" class="bar">
+      <div id="b9" class="beat downbeat"></div>
+      <div id="b10" class="beat"></div>
+      <div id="b11" class="beat"></div>
+      <div id="b12" class="beat"></div>
+    </div>
+    <div id="m4" class="bar">
+      <div id="b13" class="beat downbeat"></div>
+      <div id="b14" class="beat"></div>
+      <div id="b15" class="beat"></div>
+      <div id="b16" class="beat" style="margin-right:0;"></div>
+    </div>
   </div>
   <div id="panel"></div>
   <br class="clear" />
 </div>
 </div>
-<script src="assets/example/TRRBHAK139155E1516.var.js"></script>
 
-<script>
+<script language="javascript">
+// array of video ids 
 
+var vids = new Array('qwQLk7NcpO4','ncXMkiwOZF0','lJtHNEDnrnY',
+  'J---aiyznGQ','gG_dA32oH44','FGBhQbmPwH8','4ohkCQp4xL0');
+var vid_metadata = new Array();
+vid_metadata[0] = {
+  "title":"Amen Break",
+  "artist":"Gregory Coleman",
+  "duration": 21.22558, 
+  "height": 81, 
+  "key": "D#", 
+  "tempo": 120.127, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[1] = {
+  "title":"Breathe (Krewella Vocal Edit)",
+  "artist":"Skrillex",
+  "duration": 198.1268, 
+  "height": 108, 
+  "key": "F#", 
+  "tempo": 139.955, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[2] = {
+  "title":"Gangnam Style",
+  "artist":"MIT version",
+  "duration": 302.25088, 
+  "height": 81, 
+  "key": "b", 
+  "tempo": 131.979, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[3] = {
+  "title":"Keyboard Cat",
+  "artist":"Play him off!",
+  "duration": 55.01601, 
+  "height": 108, 
+  "key": "f", 
+  "tempo": 92.983, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[4] = {
+  "title":"Ni**az in Paris",
+  "artist":"Jay-Z and Kanye West",
+  "duration": 251.33823, 
+  "height": 81, 
+  "key": "f", 
+  "tempo": 140.215, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[5] = {
+  "title":"One More Time",
+  "artist":"Daft Punk",
+  "duration": 321.94721, 
+  "height": 108, 
+  "key": "D", 
+  "tempo": 122.838, 
+  "time_signature": 4, 
+  "width": 145
+};
+vid_metadata[6] = {
+  "title":"Falcon Jab",
+  "artist":"Ratatat",
+  "duration": 235.56027, 
+  "height": 106, 
+  "key": "f", 
+  "tempo": 110.205, 
+  "time_signature": 4, 
+  "width": 145
+};
+
+// array of json objects corresponding to the array of video ids
+// access data like vid_slices[0].beats
+var vid_slices = new Array();
+// number of videos loaded (obsolete since script inclusion on document ready)
+var vids_loaded = 0;
+</script>
+  
+<script src="ajax.php?i=0&vid=qwQLk7NcpO4" language="javascript"></script>
+<script src="ajax.php?i=1&vid=ncXMkiwOZF0" language="javascript"></script>
+<script src="ajax.php?i=2&vid=lJtHNEDnrnY" language="javascript"></script>
+<script src="ajax.php?i=3&vid=J---aiyznGQ" language="javascript"></script>
+<script src="ajax.php?i=4&vid=gG_dA32oH44" language="javascript"></script>
+<script src="ajax.php?i=5&vid=FGBhQbmPwH8" language="javascript"></script>
+<script src="ajax.php?i=6&vid=4ohkCQp4xL0" language="javascript"></script>
+
+<script language="javascript">
+// default selected button index (no pad selected)
+var selected = -1;
+var current_vid = 0;
+
+var multiple_selection_mode = false; 
+var multiple_selection_start;
+var multiple_selection_end;
+
+// convert seconds to mm:ss format
+function convertTimestamp(seconds) {
+  var s = seconds;
+  var m = Math.floor(seconds / 60);
+  s = s - m * 60;
+  //return sprintf("%02d:%02d.%02d", m, s, (s - Math.floor(s))*100);
+  return sprintf("%02d:%02d", m, s);
+}
+
+// webkit web audio context 
 var context;
 
-var buffer; 
-var bufferLoaded = false;
+// audio buffers (one per each video) 
+var buffers = new Array(); 
 
+var buffer; 
+
+// node passed to all notes (chained with compressor) to prevent clipping
 var masterGainNode;
 
+// number of pads
 var n = 16;
 
+// sequencer variables 
+var beat = 0;
+var bpm = 140; 
 
+function update_beatmeter() {
+  $('#beatmeter .beat').removeClass('beatactive');
+  $('#beatmeter .beat').removeClass('downbeatactive');
+  if ((beat - 1) % 4 == 0) {
+    $('#b' + beat).addClass('downbeatactive');
+  } else {
+    $('#b' + beat).addClass('beatactive');
+  }
+  if (beat > 15) {
+    beat = 0;
+  }
+}
+
+function start_sequencer() {
+  console.log('Starting Sequencer');
+  var delay = 60.0 * 1000.0 / bpm;
+  setInterval(function() {
+    beat = beat + 1;
+    update_beatmeter();
+  console.log('Sequencer tick');
+  }, delay);
+}
+
+// play a sound from a buffer via masterGainNode
 function playNote(buffer, when, offset, duration) {
 	var note = context.createBufferSource();
 	note.buffer = buffer;
@@ -73,36 +256,83 @@ function playNote(buffer, when, offset, duration) {
   return note; 
 }
 
+// create pads using javascript
 function create_buttons(n) {
   for (var i = 0; i < n; i++) {
-    var button = $('<div id="button' + i + '" class="button"><span></span></div>');
+    var button = $(sprintf('<div id="button%d" class="button"><span>%s</span></div>', i, keymap[i]));
     button.data('id', i);
     button.appendTo('#panel');
+    button.delay(i * 50 + 500).fadeIn(400);
   }
   $('.button').addClass('rounded');
-  
 }
 
-var map = new Array(49, 50, 51, 52, 81, 87, 69, 82, 65, 83, 68, 70, 90, 88, 67, 86);
-  
+// arrays to map event (which key) and display letters on pads
+var map    = new Array(49, 50, 51, 52, 81, 87, 69, 82, 65, 83, 68, 70, 90, 88, 67, 86);
+var keymap = new Array('1','2','3','4','Q','W','E','R','A','S','D','F','Z','X','C','V');
+
 function keydown(evt) {
-  for (var i = 0; i < n; i++) {
+  
+  if (evt.which == 39) {  // right arrow
+      
+  }
+
+  if (evt.which == 37) {  // left arrow
+      
+  }
+
+  if (evt.which ==38 ) {  // up arrow
+      
+  }
+
+  if (evt.which == 40  ) {  // down arrow
+      
+  }
+
+  // check which button was pressed
+  for (var i = 0; i < 16; i++) {
+    // button i was pressed
     if (evt.which == map[i]) {
-      if ($('#button' + i).data('note')) {
-        $('#button' + i).data('note').noteOff(0);
+      // select the button 
+      var button = $('#button' + i);
+      // if a note was played, then stop the note now 
+      if (button.data('note')) {
+        button.data('note').noteOff(0);
+        if (button.data('loop_id')) {
+          clearInterval(button.data('loop_id'));
+          button.removeClass('looping');
+          button.removeData('loop_id');
+          return;
+        }
       }
-      var duration = TRRBHAK139155E1516.bars[i].duration;
-      var start = TRRBHAK139155E1516.bars[i].start;
-      var note = playNote(buffer, 0, start, duration);
+      // play a new note using the button's internal data if exists
+      var note;
+      if (button.data('start')) {
+        note = playNote(buffers[button.data('vid')], 0, button.data('start'), button.data('duration'));
+      }
+      // mark as activated (glow pink or green)
+      if (button.data('mode') && button.data('mode') == 'loop') {
+        button.addClass('looping');
+        var loop_id = setInterval(function() {
+          note = playNote(buffers[button.data('vid')], 0, button.data('start'), button.data('duration'));
+        }, button.data('duration') * 1000);
+        button.data('loop_id', loop_id);
+      } else {
+        button.addClass('activated');
+      }
       
-      $('#button' + i).addClass('activated');
-      // $('<p>'+evt.timeStamp+'</p>').appendTo('#browser');
+      // log event to console
+      // todo: record performance
+      console.log(sprintf('Played vid:%d bid%d at %s', 
+        button.data('vid'), button.data('bid'), evt.timeStamp));
       
-      $('#button' + i).data('note', note);
+      // set note data (so it can be stopped if button pressed again)
+      button.data('note', note);
     }
   }
 }
 
+// find out which key/pad was released and remove activated class
 function keyup(evt) {
   for (var i = 0; i < n; i++) {
     if (evt.which == map[i]) {
@@ -111,62 +341,306 @@ function keyup(evt) {
   }
 }
 
+// helper functions to hide/show/toggle css 
+function enable_effects() { $('#editbutton img').css('opacity','1.0'); }
+function enable_load() { $('#loadbutton img').css('opacity','1.0'); }
+function disable_effects() { $('#editbutton img').css('opacity','0.5'); }
+function disable_load() { $('#loadbutton img').css('opacity','0.5'); }
+function show_browser(active) {
+  if (active=='effects') { $('#instructions').hide(); $('#effectsbrowser').show(); $('#beatbrowser').hide(); }
+  if (active=='instructions') { $('#instructions').show(); $('#effectsbrowser').hide(); $('#beatbrowser').hide(); }
+  if (active=='beat') { $('#instructions').hide(); $('#effectsbrowser').hide(); $('#beatbrowser').show(); }
+}
+function sample_mode(mode) {
+  if (mode=='oneshot') {
+    $('#oneshotbutton').addClass('active');
+    $('#loopbutton').removeClass('active');
+    $('#mutebutton').removeClass('active');
+  } else if (mode=='loop') {
+    $('#oneshotbutton').removeClass('active');
+    $('#loopbutton').addClass('active');
+    $('#mutebutton').removeClass('active');
+  } else if (mode=='mute') {
+    $('#oneshotbutton').removeClass('active');
+    $('#loopbutton').removeClass('active');
+    $('#mutebutton').addClass('active');
+  } else {
+    $('#oneshotbutton').removeClass('active');
+    $('#loopbutton').removeClass('active');
+    $('#mutebutton').removeClass('active');
+  }
+}
+function set_mode(mode) {
+  if (selected >=0) {
+    var button = $('#button' + selected);
+    button.data('mode', mode);
+    sample_mode(mode);
+  }
+}
+
+// clicked on a pad  
 function buttonclick(id) {
   var button = $('#button'+id);
+  // button was already selected, so now deselect
   if (button.data('selected') == 1) {
+    // change button internal selected state and remove selected css 
     button.data('selected', 0);
     button.removeClass('selected');
-    $('#info2').html('');
+    // set global selected pointer to null selection
+    selected = -1;
+    // show instructions and disable edit and load 
+    show_browser('instructions');
+    disable_effects();
+    disable_load();
+    sample_mode('none');
   } else {
+    // deselect everything 
     $('#panel').find('.selected').removeClass('selected').data('selected',0);
+    // then select the button that was selected
     button.data('selected', 1);
     button.addClass('selected');
-    $('#info2').html(sprintf('Selected #%02d',(id+1)));
+    selected = id;
+    // update info displays 
+    $('#info1').html(sprintf('Selected PAD - %02d', id));
+    // sample already loaded
+    if (button.data('bid') > 0) {
+      $('#info2').html(sprintf('%s Beat %03d', 
+        convertTimestamp(button.data('start')), 
+        button.data('bid')));
+      enable_effects();
+      enable_load();
+      if (button.data('mode') && button.data('mode') == 'loop') {
+        sample_mode('loop');
+      } else {
+        sample_mode('oneshot');
+      }
+    // sample not yet loaded
+    } else {
+      $('#info2').html(' * LOAD SAMPLE * ');
+      disable_effects();
+      enable_load();
+      show_browser('beat');
+      sample_mode('oneshot');
+    }
+  }
+}
+
+// assign sample chosen from beat browser to selected pad 
+// this is called when a beat is clicked on in the browser
+function mapSamples(beat) {
+  if (selected >= 0) {
+    // copy data from beat to button
+    var button = $('#button' + selected);
+    button.data('vid',beat.data('vid'));
+    button.data('bid', beat.data('bid'));
+    button.data('start', beat.data('start'));
+    button.data('duration', beat.data('duration'));
+    // update line 2 of the info lcd
+    $('#info2').html(sprintf('%s Beat %03d', 
+      convertTimestamp(beat.data('start')), 
+      beat.data('bid')));
+    // enable the effects panel since current selected pad has sample loaded
+    $('#editbutton img').css('opacity','1.0');
+  }
+}
+
+// populate the sample browser using samples from video vids[i] 
+function populateSamples(i) {
+  update_vid_lcd();
+  
+  
+  // clear beatbrowser
+  $('#beatbrowser').html('');
+  var slices = vid_slices[i];
+  var beats = slices.beats; 
+  var bars = slices.bars;
+  var counter = -1;
+  var zebra = -1;
+  // for each beat 
+  for (var j = 0; j < beats.length; j++) {
+    // create DOM object for beat (add class for downbeats)
+    var beat = $(sprintf('<span id="%d-%d"></span>', i, j));
+    if (counter++ == 3 || counter == 0) {
+      counter = 0;
+      beat.addClass('downbeat');
+    }
+    if (zebra++ < 64) {
+      
+    }
+    
+    // add data fields to beats 
+    beat.data('vid', i);
+    beat.data('bid', j);
+    beat.data('duration', beats[j].duration);
+    beat.data('start', beats[j].start);
+    // add event handlers 
+    // todo: drag and drop (activate state and record start position 
+    // on mousedown and deactivate on mouseup and record end position
+    beat.click(function(evt) {
+      
+      
+      /*$('#beatbrowser span').removeClass('selected');
+      playNote(buffers[current_vid], 0, $(this).data('start'), $(this).data('duration'));
+      mapSamples($(this));
+      $(this).addClass('selected');
+      // beat_selected = beat.data('bid');*/
+      
+    });
+    
+    beat.mousedown(function(evt) {
+      multiple_selection_mode = true;
+      multiple_selection_start = $(this);
+      
+      var url = sprintf("url('assets/%s/%s.jpg')", vids[current_vid],vids[current_vid]);
+      var xpos = ($(this).data('bid') * 145) % 10000;
+      var ypos = Math.floor(($(this).data('bid') * 145) / 10000) * vid_metadata[current_vid].height;
+      var thumbnail = $(sprintf('<div style="background:%s -%dpx -%dpx"></div>',
+        url, xpos, ypos));
+      thumbnail.css('width', '145px');
+      thumbnail.css('height', '81px');
+      thumbnail.css('margin', '32px 0px 0px 0px');
+      thumbnail.css('position', 'relative');
+      thumbnail.css('z-index', '100');
+      $('#button' + selected).html($(thumbnail));
+      $('#button' + selected).css('background-color', 'rgba(0,0,0,0.5)');
+      $('<img class="overlay" src="css/glossy.png" />').appendTo($('#button' + selected));
+    });
+    
+    beat.mouseup(function(evt) {
+      if (multiple_selection_mode) {
+        multiple_selection_end = $(this);
+        var combined = $('<span class="beat" style="display:none"></span>');
+        combined.data('start', multiple_selection_start.data('start'));
+        combined.data('duration', multiple_selection_end.data('start') - multiple_selection_start.data('start') + multiple_selection_end.data('duration'));
+        combined.data('bid', multiple_selection_start.data('bid'));
+        combined.data('vid', multiple_selection_start.data('vid'));
+        mapSamples(combined);
+        var startbid = multiple_selection_start.data('bid');
+        var endbid = multiple_selection_end.data('bid');
+        $('#beatbrowser span').removeClass('selected');
+        for (var k = startbid; k <= endbid; k++) {
+          $(sprintf('#%d-%d', i, k)).addClass('selected');
+        }
+        playNote(buffers[i], 0, combined.data('start'), combined.data('duration'));
+      }
+      multiple_selection_mode = false;
+    });
+    
+    // update info screen on hover(mousein, mouseout)
+    beat.hover(function(evt) {
+      $('#info3').html(sprintf('%s Beat %03d', 
+        convertTimestamp($(this).data('start')), 
+        $(this).data('bid')));
+      $('#info3').css('opacity','1.0');
+      
+    },
+    function(evt) {
+      $('#info3').css('opacity','0.5');
+    });
+    // add beat object to the beat browser
+    beat.appendTo('#beatbrowser');
+  }
+}
+
+function update_vid_lcd() {
+  var metadata = vid_metadata[current_vid];
+  
+  $('#row1').html(metadata.title);
+  $('#row2').html(metadata.artist);
+  var bpm = metadata.tempo;
+  var key = metadata.key;
+  var duration = convertTimestamp(metadata.duration);
+  $('#bpm').html(sprintf('BPM: %d',bpm));
+  $('#key').html('KEY:  ' + key);
+  $('#duration').html('T: ' + duration);
+  
+}
+
+function next_vid() {
+  if (current_vid < vids.length - 1) {
+    current_vid = current_vid + 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
+  } else {
+    current_vid = 0;
+    update_vid_lcd();
+    populateSamples(current_vid);
+  }
+}
+
+function prev_vid() {
+  if (current_vid > 0) {
+    current_vid = current_vid - 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
+  } else {
+    current_vid = vids.length - 1;
+    update_vid_lcd();
+    populateSamples(current_vid);
   }
 }
 
 $(document).ready(function() {
-  // create buttons
-  create_buttons(n);
 
   context = new webkitAudioContext();
   
   /*
-  $('#button3').html('<img src="assets/example/thumb.jpg" /><img class="overlay" src="css/glossy.png" />');
-  $('#button15').html('<img src="assets/example/cowbell.gif" /><img class="overlay" src="css/glossy.png" />');
+  $('#button3').html('<div /><img class="overlay" src="css/glossy.png" />');
   */
   
-  $('.button').click(function() {
-    buttonclick($(this).data('id'));
-  });
+  // $('#button15').html('<img src="assets/example/cowbell.gif" /><img class="overlay" src="css/glossy.png" />');
   
-  $('.pushbutton').mousedown(function() {
-    $(this).addClass('pushed');
-  });
-  $('.pushbutton').mouseup(function() {
-    $(this).removeClass('pushed');
-  });
   
-  $(document).keydown(keydown);
-  $(document).keyup(keyup);
+  $('.pushbutton').mousedown(function() { $(this).addClass('pushed'); });
+  $('.pushbutton').mouseup(function() { $(this).removeClass('pushed'); });
+  $('#loadbutton').click(function(evt) { if (selected >= 0) show_browser('beat'); });
+  $('#editbutton').click(function(evt) { if (selected >= 0) show_browser('effects'); });
+  $('#loopbutton').click(function(evt) { if (selected >= 0) set_mode('loop'); });
+  $('#oneshotbutton').click(function(evt) { if (selected >= 0) set_mode('oneshot'); });
+  $('#mutebutton').click(function(evt) { if (selected >= 0) set_mode('mute'); });
+  $('#recordbutton').click(function(evt) { start_sequencer(); });
+  $('#down').click(function(evt) { next_vid(); });
+  $('#up').click(function(evt) { prev_vid(); });
 
-  function loadBuffer(url) {
+  var numLoaded = 0;
+  
+  function loadBuffer(url, i) {
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
       request.responseType = "arraybuffer";
       request.onload = function() {
-      	buffer = context.createBuffer(request.response, false);
-        bufferLoaded = true;
-        $('#loading').hide();
-        $('#machine').show();
+      	numLoaded++;
+        buffers[i] = context.createBuffer(request.response, false);
+        
+        $('#progress').html(sprintf('%d/%d', numLoaded, vids.length));
+        
+        if (numLoaded == vids.length) {
+          // hide loading screen
+          $('#loading').fadeOut(500);
+          // show machine 
+          $('#machine').delay(500).fadeIn(500);
+          // generate pads 
+          create_buttons(n);
+          // attach event handlers to newly generated pads 
+          $('.button').click(function() { buttonclick($(this).data('id')); });
+          // load interface elements for video 0
+          populateSamples(0);
+        }
       }
       request.send();
   }
 
   function init() {
+    
+    // load i buffers from files
+    for (var i = 0; i < vids.length; i++) {
+      var buffer_url = sprintf('assets/%s/%s.mp3', vids[i], vids[i]);
+      console.log('Loading buffer from ' + buffer_url);
+    	loadBuffer(buffer_url, i);
+    }
 
-  	loadBuffer('assets/example/TRRBHAK139155E1516.mp3');
-
+    // create local final mix node, and attach it to compressor, 
+    // then attach final mix node to global masterGainNode
   	var finalMixNode;
   	if (context.createDynamicsCompressor) {
   		compressor = context.createDynamicsCompressor();
@@ -179,6 +653,9 @@ $(document).ready(function() {
   }
 
   init();
+  
+  $(document).keydown(keydown);
+  $(document).keyup(keyup);
   
 });
 </script> 
